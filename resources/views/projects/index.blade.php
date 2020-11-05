@@ -1,15 +1,21 @@
 @component('layouts.app')
-	<div class='flex justify-between mb-3'>
-		<h2>Birdboard</h2>
-		<a href="/projects/create"><h2>Create project</h2></a>
-	</div>
-	<ul>
+	<header class='flex justify-between mb-3 items-end'>
+		<h2 class="text-gray-500">My Projects</h2>
+		<a
+			href="/projects/create"
+			class="button"
+			><h2>New project</h2>
+		</a>
+	</header>
+
+	<main class='lg:flex lg:flex-wrap -mx-3'>
 		@forelse($projects as $project)
-			<li>
-				<a href="{{ $project->path() }}">{{ $project->title }}</a>
-			</li>
+			<div class='lg:w-1/3'>
+				@component('projects.card', ['project' => $project])
+				@endcomponent
+			</div>
 		@empty
-			<li>No projects yet</li>
+			<div>No projects yet</div>
 		@endforelse
-	</ul>
+	</main>
 @endcomponent
