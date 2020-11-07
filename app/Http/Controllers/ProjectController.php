@@ -5,11 +5,12 @@ namespace App\Http\Controllers;
 use App\Project;
 use Illuminate\Http\Request;
 
-class ProjectsController extends Controller
+class ProjectController extends Controller
 {
     public function index()
     {
         $projects = current_user()->projects;
+
         return view('projects.index')->with('projects', $projects);
     }
 
@@ -31,9 +32,9 @@ class ProjectsController extends Controller
             'description' => 'required'
         ]);
 
-        current_user()->projects()->create($attributes);
+        $project = current_user()->projects()->create($attributes);
 
-        return redirect('/projects');
+        return redirect($project->path());
     }
 
     public function create()

@@ -12,6 +12,8 @@ abstract class TestCase extends BaseTestCase
 
     public function signIn($user = null)
     {
+        // return  $this->actingAs($user ?: factory(\App\User::class)->create());
+
         if (!$user) {
             $user = factory(\App\User::class)->create();
         }

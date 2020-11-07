@@ -10,11 +10,30 @@ class UserTest extends TestCase
 {
     use RefreshDatabase;
 
+    public $user;
+
+    public function setUp() : void
+    {
+        parent::setUp();
+
+        $this->user = create_user();
+    }
+
     /** @test */
     public function has_projects()
     {
-        $user = factory(\App\User::class)->create();
+        $this->assertInstanceOf(Collection::class, $this->user->projects);
+    }
 
-        $this->assertInstanceOf(Collection::class, $user->projects);
+    /** @test */
+    public function can_add_a_project()
+    {
+        $project = $this->user->addProject([
+            'title' => 'title',
+            'description' => 'description'
+        ]);
+
+        $this->assertCount(1, $this->user->projects);
+        $this->assertTrue($this->user->projects->contains($project));
     }
 }

@@ -20,10 +20,15 @@ Route::get('/', function () {
 
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::post('/projects', 'ProjectsController@store');
-    Route::get('/projects', 'ProjectsController@index');
-    Route::get('/projects/create', 'ProjectsController@create');
-    Route::get('/projects/{project}', 'ProjectsController@show');
+
+    // projects
+    Route::post('/projects', 'ProjectController@store');
+    Route::get('/projects', 'ProjectController@index');
+    Route::get('/projects/create', 'ProjectController@create');
+    Route::get('/projects/{project}', 'ProjectController@show');
+
+    // project task
+    Route::post('/projects/{project}/tasks', 'ProjectTaskController@store');
 
     Route::get('/home', 'HomeController@index')->name('home');
 });
