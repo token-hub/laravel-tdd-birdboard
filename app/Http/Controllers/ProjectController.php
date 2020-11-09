@@ -29,7 +29,8 @@ class ProjectController extends Controller
     {
         $attributes = $request->validate([
             'title' => 'required',
-            'description' => 'required'
+            'description' => 'required',
+            'notes' => 'min:3'
         ]);
 
         $project = current_user()->projects()->create($attributes);
@@ -40,5 +41,18 @@ class ProjectController extends Controller
     public function create()
     {
         return view('projects.create');
+    }
+
+    public function update(Project $project, Request $request)
+    {
+        $this->authorize('update', $project);
+
+        $attributes = $request->validate([
+            'notes' => 'required|min:3'
+        ]);
+
+        $project->update($attributes);
+
+        return redirect($project->path());
     }
 }

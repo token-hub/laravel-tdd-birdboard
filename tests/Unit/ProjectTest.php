@@ -28,7 +28,7 @@ class ProjectTest extends TestCase
     /** @test */
     public function a_project_has_an_owner()
     {
-        $this->assertInstanceOf(User::class, $this->project->user);
+        $this->assertInstanceOf(User::class, $this->project->owner);
     }
 
     /** @test */

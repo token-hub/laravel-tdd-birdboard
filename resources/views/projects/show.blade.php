@@ -34,12 +34,33 @@
 				</div>
 
 				@foreach($project->tasks as $task)
-					<div class='card'>{{ $task->body }}</div>
+					<form action="{{$task->path()}}" method="POST">
+						@method('PATCH')
+						@csrf
+						<div class='card'>
+							<div class="flex">
+								<input type="text" name='body' class="w-full {{ $task->completed ? 'text-gray-400' : '' }} " value="{{ $task->body }}">
+								<input type="checkbox" name="completed" onChange="this.form.submit()"  {{ $task->completed ? 'checked' : '' }}>
+							</div>
+						</div>
+					</form>
 				@endforeach
 			<!-- General notes -->
 			<h2 class='text-gray-500 py-3'>General Notes</h2>
 
-			<textarea class='card w-full mx-2' style="height: 200px">Lorem</textarea>
+			<div>
+				<form action="/{{$project->path()}}" method='POST'>
+					@csrf
+					@method('PATCH')
+					<textarea
+						class='card w-full mx-2'
+						style="height: 200px"
+						placeholder="Create notes for your project" name='notes'
+						>{{ $project->notes }}
+					</textarea>
+					<button type='submit' class='button'>Submit</button>
+				</form>
+			</div>
 		</div>
 
 		<div class='lg:w-1/4'>

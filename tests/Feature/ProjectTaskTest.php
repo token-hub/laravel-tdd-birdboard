@@ -48,11 +48,29 @@ class ProjectTaskTest extends TestCase
     }
 
     /** @test */
+    public function authenticated_user_cannot_update_a_task_to_a_project_he_doesnt_own()
+    {
+        $this->signIn();
+
+        $project = create_project();
+
+        $task = $project->addTask(['body' => 'Sample task']);
+
+        $this->call(
+            'patch',
+            $task->path(),
+            $this->task_attributes(true)
+        )->assertStatus(403);
+
+        $this->assertDatabaseMissing('tasks', $this->task_attributes());
+    }
+
+    /** @test */
     public function a_project_has_tasks()
     {
-        $this->withoutExceptionHandling();
-
         $this->signIn();
+
+        // $this->withoutExceptionHandling();
 
         $project = $this->user->addProject($this->project_attributes());
 
@@ -69,26 +87,50 @@ class ProjectTaskTest extends TestCase
     }
 
     /** @test */
+    public function a_project_can_be_updated()
+    {
+        $this->signIn();
+
+        $this->withoutExceptionHandling();
+
+        $project = $this->user->addProject($this->project_attributes());
+
+        $task = $project->addTask(['body' => 'Sample Task']);
+
+        $this->call(
+            'patch',
+            $task->path(),
+            $this->task_attributes(true, ['completed' => true])
+        )->assertRedirect($project->path());
+
+        $task->refresh();
+
+        $this->assertTrue((boolean)$task->completed);
+    }
+
+    /** @test */
     public function a_task_has_a_body()
     {
         $this->signIn();
 
         $project = $this->user->addProject($this->project_attributes());
 
-        $attributes = ['body' => ''];
-
         $this->call(
             'post',
             $project->path().'/tasks',
-            $this->task_attributes(true, '')
+            $this->task_attributes(true, ['body' => ''])
         )->assertSessionHasErrors('body');
     }
 
-    public function task_attributes($token = false, $param = 'body')
+    public function task_attributes($token = false, $param = [])
     {
-        return $token ? [
-                'body' => $param,
-                '_token' => Session::token()
-            ] : ['body' => $param];
+        $attributes = [
+                        'body' => 'body',
+                        'completed' => 0
+                    ];
+
+        return $token
+                    ? array_merge($attributes, ['_token' => Session::token()], $param)
+                    : array_merge($attributes, $param);
     }
 }
