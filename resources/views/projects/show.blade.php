@@ -6,9 +6,9 @@
 				<a href="/projects">My Projects</a> / {{ $project->title }}
 			</p>
 			<a
-				href="/projects/create"
+				href="/{{$project->path()}}/edit"
 				class="button"
-				><h2>New project</h2>
+				><h2>Edit project</h2>
 			</a>
 		</div>
 		<div class="flex">
@@ -64,7 +64,7 @@
 		</div>
 
 		<div class='lg:w-1/4'>
-			@component('projects.card', ['project' => $project])
+			@component('projects._card', ['project' => $project])
 			@endcomponent
 		</div>
 	</main>

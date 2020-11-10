@@ -11,7 +11,7 @@
 	<main class='lg:flex lg:flex-wrap -mx-3'>
 		@forelse($projects as $project)
 			<div class='lg:w-1/3'>
-				@component('projects.card', ['project' => $project])
+				@component('projects._card', ['project' => $project])
 				@endcomponent
 			</div>
 		@empty

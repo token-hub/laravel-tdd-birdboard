@@ -81,6 +81,7 @@ class ManageProjectTest extends TestCase
         $this->post('projects', $this->project_attributes(true))
             ->assertRedirect('login');
         $this->get('projects')->assertRedirect('login');
+        $this->get($project->path().'/edit')->assertRedirect('/login');
         $this->get($project->path())->assertRedirect('login');
     }
 
@@ -107,7 +108,33 @@ class ManageProjectTest extends TestCase
     }
 
     /** @test */
-    public function authenticated_user_can_update_their_notes_on_their_project()
+    public function authenticated_user_can_update_their_project()
+    {
+        $this->signIn();
+
+        $this->withoutExceptionHandling();
+
+        $project = ProjectFactory::ownedBy($this->user)->create();
+
+        $response = $this->call(
+            'patch',
+            $project->path(),
+            $this->project_attributes(true, $attributes = ['notes' => 'something new', 'title' => 'new title', 'description' => 'new description'])
+        );
+
+        $project->refresh();
+
+        $this->assertDatabaseHas('projects', $attributes);
+
+        $this->assertEquals('something new', $project->notes);
+
+        $this->call('get', $project->path().'/edit')->assertOk();
+
+        $response->assertRedirect($project->path());
+    }
+
+    /** @test */
+    public function authenticated_user_can_update_general_notes()
     {
         $this->signIn();
 
@@ -116,14 +143,16 @@ class ManageProjectTest extends TestCase
         $response = $this->call(
             'patch',
             $project->path(),
-            $this->project_attributes(true, ['notes' => 'something new'])
+            $this->project_attributes(true, $attributes = ['notes' => 'something new'])
         );
 
         $project->refresh();
 
-        $this->assertDatabaseHas('projects', ['notes' => 'something new']);
+        $this->assertDatabaseHas('projects', $attributes);
 
         $this->assertEquals('something new', $project->notes);
+
+        $this->call('get', $project->path().'/edit')->assertOk();
 
         $response->assertRedirect($project->path());
     }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use Illuminate\Http\Request;
+use App\Http\Requests\UpdateProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -17,10 +18,6 @@ class ProjectController extends Controller
     public function show(Project $project)
     {
         $this->authorize('view', $project);
-
-        // if (current_user()->isNot($project->user)) {
-        //     abort(403);
-        // }
 
         return view('projects.show')->with('project', $project);
     }
@@ -43,16 +40,20 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    public function update(Project $project, Request $request)
+    public function edit(Project $project)
     {
         $this->authorize('update', $project);
 
-        $attributes = $request->validate([
-            'notes' => 'required|min:3'
-        ]);
+        return view('projects.edit')->with('project', $project);
+    }
 
-        $project->update($attributes);
+    public function update(Project $project, UpdateProjectRequest $request)
+    {
+        $request->updateProject();
 
+        // $project->update($request->validated());
+
+        // return redirect($request->project()->path());
         return redirect($project->path());
     }
 }
