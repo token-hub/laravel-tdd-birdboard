@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use Tests\TestCase;
 use App\Traits\Projectable;
+use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -22,7 +23,7 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function guest_cannot_add_a_task()
     {
-        $project = create_project();
+        $project = ProjectFactory::create();
 
         $this->call(
             'post',
@@ -36,7 +37,7 @@ class ProjectTaskTest extends TestCase
     {
         $this->signIn();
 
-        $project = create_project();
+        $project = ProjectFactory::create();
 
         $this->call(
             'post',
@@ -52,13 +53,11 @@ class ProjectTaskTest extends TestCase
     {
         $this->signIn();
 
-        $project = create_project();
-
-        $task = $project->addTask(['body' => 'Sample task']);
+        $project = ProjectFactory::withTasks(1)->create();
 
         $this->call(
             'patch',
-            $task->path(),
+            $project->tasks[0]->path(),
             $this->task_attributes(true)
         )->assertStatus(403);
 
@@ -70,9 +69,7 @@ class ProjectTaskTest extends TestCase
     {
         $this->signIn();
 
-        // $this->withoutExceptionHandling();
-
-        $project = $this->user->addProject($this->project_attributes());
+        $project = ProjectFactory::ownedBy($this->user)->create();
 
         $this->call(
             'post',
@@ -91,11 +88,9 @@ class ProjectTaskTest extends TestCase
     {
         $this->signIn();
 
-        $this->withoutExceptionHandling();
+        $project = ProjectFactory::ownedBy($this->user)->withTasks(1)->create();
 
-        $project = $this->user->addProject($this->project_attributes());
-
-        $task = $project->addTask(['body' => 'Sample Task']);
+        $task = $project->tasks[0];
 
         $this->call(
             'patch',
@@ -113,7 +108,7 @@ class ProjectTaskTest extends TestCase
     {
         $this->signIn();
 
-        $project = $this->user->addProject($this->project_attributes());
+        $project = ProjectFactory::ownedBy($this->user)->create();
 
         $this->call(
             'post',

@@ -3,6 +3,7 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
+use Facades\Tests\Setup\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
@@ -16,7 +17,7 @@ class UserTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = create_user();
+        $this->user = UserFactory::create();
     }
 
     /** @test */

@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Project;
 use Tests\TestCase;
+use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -65,7 +66,7 @@ class ManageProjectTest extends TestCase
     {
         $this->signIn();
 
-        $project = factory(\App\Project::class)->create(['user_id' => $this->user->id]);
+        $project = ProjectFactory::ownedBy($this->user)->create();
 
         $this->get($project->path())
             ->assertSee($project->title)
@@ -75,7 +76,7 @@ class ManageProjectTest extends TestCase
     /** @test */
     public function guest_cannot_manage_a_project()
     {
-        $project = factory(\App\Project::class)->create();
+        $project = ProjectFactory::create();
 
         $this->post('projects', $this->project_attributes(true))
             ->assertRedirect('login');
@@ -88,7 +89,7 @@ class ManageProjectTest extends TestCase
     {
         $this->signIn();
 
-        $project = factory(\App\Project::class)->create();
+        $project = ProjectFactory::create();
 
         $this->get($project->path())
             ->assertStatus(403);
@@ -99,7 +100,7 @@ class ManageProjectTest extends TestCase
     {
         $this->signIn();
 
-        $project = factory(\App\Project::class)->create();
+        $project = ProjectFactory::create();
 
         $this->patch($project->path(), $this->project_attributes(true))
             ->assertStatus(403);
@@ -110,7 +111,7 @@ class ManageProjectTest extends TestCase
     {
         $this->signIn();
 
-        $project = $this->user->addProject($this->project_attributes());
+        $project = ProjectFactory::ownedBy($this->user)->create();
 
         $response = $this->call(
             'patch',
@@ -125,8 +126,6 @@ class ManageProjectTest extends TestCase
         $this->assertEquals('something new', $project->notes);
 
         $response->assertRedirect($project->path());
-
-        // $this->assertDatabaseHas('project', )
     }
 
     public function project_attributes($token = false, $param = [])

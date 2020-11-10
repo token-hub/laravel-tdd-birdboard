@@ -4,6 +4,7 @@ namespace Tests\Unit;
 
 use App\User;
 use Tests\TestCase;
+use Facades\Tests\Setup\UserFactory;
 use Illuminate\Database\Eloquent\Collection;
 
 class ProjectTest extends TestCase
@@ -14,7 +15,7 @@ class ProjectTest extends TestCase
     {
         parent::setUp();
 
-        $user = create_user();
+        $user = UserFactory::create();
 
         $this->project = $user->addProject($this->project_attributes());
     }
