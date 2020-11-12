@@ -20,4 +20,9 @@ class Project extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+
+    public function activities()
+    {
+        return $this->hasMany(Activity::class);
+    }
 }

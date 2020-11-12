@@ -1,8 +1,4 @@
 <?php
-
-use App\Project;
-use Illuminate\Http\Request;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes

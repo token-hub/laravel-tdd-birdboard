@@ -3,12 +3,17 @@
 namespace Tests\Unit;
 
 use App\User;
+use App\Activity;
 use Tests\TestCase;
 use Facades\Tests\Setup\UserFactory;
+use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProjectTest extends TestCase
 {
+    use RefreshDatabase;
+
     public $project;
 
     public function setUp() : void
@@ -17,7 +22,7 @@ class ProjectTest extends TestCase
 
         $user = UserFactory::create();
 
-        $this->project = $user->addProject($this->project_attributes());
+        $this->project = ProjectFactory::create();
     }
 
     /** @test */
@@ -46,6 +51,12 @@ class ProjectTest extends TestCase
         $this->assertCount(1, $this->project->tasks);
 
         $this->assertTrue($this->project->tasks->contains($task));
+    }
+
+    /** @test */
+    public function a_project_has_activities()
+    {
+        $this->assertCount(1, $this->project->activities);
     }
 
     public function project_attributes()
