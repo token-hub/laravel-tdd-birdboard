@@ -18,6 +18,8 @@ class ProjectTaskTest extends TestCase
         parent::setUp();
 
         Session::start();
+
+        $this->signIn();
     }
 
     /** @test */
@@ -29,14 +31,12 @@ class ProjectTaskTest extends TestCase
             'post',
             $project->path().'/tasks',
             $this->project_attributes()
-        )->assertRedirect('login');
+        )->assertStatus(403);
     }
 
     /** @test */
     public function authenticated_user_cannot_add_a_task_to_a_project_he_doesnt_own()
     {
-        $this->signIn();
-
         $project = ProjectFactory::create();
 
         $this->call(
@@ -51,8 +51,6 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function authenticated_user_cannot_update_a_task_to_a_project_he_doesnt_own()
     {
-        $this->signIn();
-
         $project = ProjectFactory::withTasks(1)->create();
 
         $this->call(
@@ -67,8 +65,6 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function a_project_has_tasks()
     {
-        $this->signIn();
-
         $project = ProjectFactory::ownedBy($this->user)->create();
 
         $this->call(
@@ -86,7 +82,7 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function a_project_can_be_updated()
     {
-        $this->signIn();
+        $this->withoutExceptionHandling();
 
         $project = ProjectFactory::ownedBy($this->user)->withTasks(1)->create();
 
@@ -106,8 +102,6 @@ class ProjectTaskTest extends TestCase
     /** @test */
     public function a_task_has_a_body()
     {
-        $this->signIn();
-
         $project = ProjectFactory::ownedBy($this->user)->create();
 
         $this->call(

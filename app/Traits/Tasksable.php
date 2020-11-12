@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use App\Task;
+use App\Activity;
 
 trait Tasksable
 {
@@ -13,6 +14,8 @@ trait Tasksable
 
     public function addTask($attributes)
     {
-        return $this->tasks()->create($attributes);
+        $task = $this->tasks()->create($attributes);
+
+        return $task;
     }
 }

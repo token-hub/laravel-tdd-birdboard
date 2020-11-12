@@ -4,19 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Task;
 use App\Project;
+use App\Activity;
 use Illuminate\Http\Request;
+use App\Http\Requests\ProjectTaskRequest;
+use App\Http\Controllers\ProjectTaskController;
 
 class ProjectTaskController extends Controller
 {
-    public function store(Project $project, Request $request)
+    public function store(Project $project, ProjectTaskRequest $request)
     {
-        $this->authorize('view', $project);
-
-        $attributes = $request->validate(["body" => ['required']]);
-
-        $project->addTask($attributes);
-
-        // $project->tasks()->create($attributes);
+        $project->addTask($request->validated());
 
         return redirect($project->path());
     }
@@ -26,13 +23,16 @@ class ProjectTaskController extends Controller
         $this->authorize('update', $task);
 
         $attributes = $request->validate([
-            "body" => ['required'],
+            "body" => ['required', 'sometimes'],
         ]);
 
         $task->update([
             "body" => $request->body,
-            "completed" => $request->has('completed')
         ]);
+
+        if ($request->has('completed')) {
+            $task->complete();
+        }
 
         return redirect($project->path());
     }
