@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Session;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
-class ActivityFeedTest extends TestCase
+class TriggerActivityTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -26,7 +26,7 @@ class ActivityFeedTest extends TestCase
     }
 
     /** @test */
-    public function creating_a_project_records_activity()
+    public function creating_a_project()
     {
         $this->assertCount(1, $this->project->activities);
 
@@ -34,7 +34,7 @@ class ActivityFeedTest extends TestCase
     }
 
     /** @test */
-    public function updating_a_project_records_activity()
+    public function updating_a_project()
     {
         $this->project->update(['title' => 'changed']);
 
@@ -42,26 +42,48 @@ class ActivityFeedTest extends TestCase
     }
 
     /** @test */
-    public function create_a_task_for_a_project_records_activity()
+    public function create_a_task_for_a_project()
     {
         $this->project->addTask(['body' => 'body']);
 
         $this->assertCount(2, $activity = $this->project->activities);
 
-        $this->assertEquals('Task created', $activity->last()->description);
+        $this->assertEquals('task_created', $activity->last()->description);
     }
 
     /** @test */
-    public function completing_a_task_for_a_project_records_activity()
+    public function completing_a_task_for_a_project()
     {
-        $this->withoutExceptionHandling();
-
         $task = $this->project->addTask(['body' => 'body']);
 
-        $this->call('patch', $task->path(), ['completed' => true, '_token' => Session::token()]);
+        $task->complete();
 
-        $this->assertCount(4, $activity = $this->project->activities);
+        $this->assertCount(3, $activity = $this->project->activities);
 
-        $this->assertEquals('Task completed', $activity->last()->description);
+        $this->assertEquals('task_completed', $activity->last()->description);
+    }
+
+    /** @test */
+    public function incompleting_a_task()
+    {
+        $task = $this->project->addTask(['body' => 'body']);
+
+        $task->complete();
+
+        $task->incomplete();
+
+        $this->assertCount(4, $this->project->activities);
+
+        $this->assertEquals('task_incompleted', $this->project->activities->last()->description);
+    }
+
+    /** @test */
+    public function deleting_a_task()
+    {
+        $task = $this->project->addTask(['body' => 'body']);
+
+        $task->delete();
+
+        $this->assertCount(3, $task->project->activities);
     }
 }

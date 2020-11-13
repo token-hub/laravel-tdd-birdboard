@@ -66,6 +66,9 @@
 		<div class='lg:w-1/4'>
 			@component('projects._card', ['project' => $project])
 			@endcomponent
+
+			@component('projects.activities._card', ['activities' => $project->activities])
+			@endcomponent
 		</div>
 	</main>
 @endcomponent

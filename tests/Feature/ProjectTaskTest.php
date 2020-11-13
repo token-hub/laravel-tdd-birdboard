@@ -91,12 +91,54 @@ class ProjectTaskTest extends TestCase
         $this->call(
             'patch',
             $task->path(),
-            $this->task_attributes(true, ['completed' => true])
+            $this->task_attributes(true, ['body' => 'changed'])
+        )->assertRedirect($project->path());
+
+        $this->assertDatabaseHas('tasks', ['body' => 'changed']);
+    }
+
+    /** @test */
+    public function a_task_can_be_completed()
+    {
+        $project = ProjectFactory::ownedBy($this->user)->withTasks(1)->create();
+
+        $task = $project->tasks[0];
+
+        $this->call(
+            'patch',
+            $task->path(),
+            ['completed' => true, '_token' => Session::token()]
         )->assertRedirect($project->path());
 
         $task->refresh();
 
-        $this->assertTrue((boolean)$task->completed);
+        $this->assertTrue($task->completed);
+    }
+
+    /** @test */
+    public function a_task_can_be_mark_as_incompleted()
+    {
+        $this->withoutExceptionHandling();
+
+        $project = ProjectFactory::ownedBy($this->user)->withTasks(1)->create();
+
+        $task = $project->tasks[0];
+
+        $this->call(
+            'patch',
+            $task->path(),
+            ['completed' => true, '_token' => Session::token()]
+        )->assertRedirect($project->path());
+
+        $this->call(
+            'patch',
+            $task->path(),
+            ['completed' => false , '_token' => Session::token()]
+        )->assertRedirect($project->path());
+
+        $task->refresh();
+
+        $this->assertFalse($task->completed);
     }
 
     /** @test */
