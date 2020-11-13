@@ -3,11 +3,13 @@
 namespace App;
 
 use App\Traits\Tasksable;
+use App\Traits\Activitable;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
     use Tasksable;
+    // use Activitable;
 
     protected $guarded = [];
 
@@ -28,6 +30,8 @@ class Project extends Model
 
     public function recordActivity($description)
     {
-        $this->activities()->create(compact('description'));
+        $this->activities()->create([
+            'description' => $description
+        ]);
     }
 }

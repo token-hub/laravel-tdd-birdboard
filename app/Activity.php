@@ -8,8 +8,18 @@ class Activity extends Model
 {
     protected $guarded = [];
 
-    public function project()
+    public function subject()
     {
-        return $this->belongsTo(Project::class);
+        return $this->morphTo();
     }
+
+    // public function project()
+    // {
+    //     return $this->belongsTo(Project::class);
+    // }
+
+    // public function activitable()
+    // {
+    //     return $this->morphTo();
+    // }
 }

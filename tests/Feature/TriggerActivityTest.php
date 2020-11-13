@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Task;
 use Tests\TestCase;
 use Facades\Tests\Setup\ProjectFactory;
 use Illuminate\Support\Facades\Session;
@@ -44,11 +45,17 @@ class TriggerActivityTest extends TestCase
     /** @test */
     public function create_a_task_for_a_project()
     {
+        $this->withoutExceptionHandling();
+
         $this->project->addTask(['body' => 'body']);
 
         $this->assertCount(2, $activity = $this->project->activities);
 
-        $this->assertEquals('task_created', $activity->last()->description);
+        tap($activity->last(), function ($activity) {
+            $this->assertEquals('task_created', $activity->description);
+            $this->assertInstanceOf(Task::class, $activity->subject);
+            $this->assertEquals('body', $activity->subject->body);
+        });
     }
 
     /** @test */
@@ -60,7 +67,11 @@ class TriggerActivityTest extends TestCase
 
         $this->assertCount(3, $activity = $this->project->activities);
 
-        $this->assertEquals('task_completed', $activity->last()->description);
+        tap($activity->last(), function ($activity) {
+            $this->assertEquals('task_completed', $activity->description);
+            $this->assertInstanceOf(Task::class, $activity->subject);
+            $this->assertEquals('body', $activity->subject->body);
+        });
     }
 
     /** @test */
