@@ -3,13 +3,12 @@
 namespace App;
 
 use App\Traits\Tasksable;
-use App\Traits\Activitable;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
-    use Tasksable;
-    // use Activitable;
+    use Tasksable, RecordActivity;
 
     protected $guarded = [];
 
@@ -26,12 +25,5 @@ class Project extends Model
     public function activities()
     {
         return $this->hasMany(Activity::class)->latest('updated_at');
-    }
-
-    public function recordActivity($description)
-    {
-        $this->activities()->create([
-            'description' => $description
-        ]);
     }
 }

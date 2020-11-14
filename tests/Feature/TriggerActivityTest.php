@@ -31,13 +31,29 @@ class TriggerActivityTest extends TestCase
     {
         $this->assertCount(1, $this->project->activities);
 
-        $this->assertEquals('created', $this->project->activities->first()->description);
+        tap($this->project->activities->last(), function ($activity) {
+            $this->assertEquals('project_created', $activity->description);
+            $this->assertNull($activity->changes);
+        });
     }
 
     /** @test */
     public function updating_a_project()
     {
-        $this->project->update(['title' => 'changed']);
+        $original = $this->project->title;
+
+        $this->project->update(['title' => 'was changed']);
+
+        tap($this->project->activities->last(), function ($activity) use ($original) {
+            $this->assertEquals('project_updated', $activity->description);
+
+            $expected = [
+                'before' => ['title' => $original],
+                'after' => ['title' => 'was changed']
+            ];
+
+            $this->assertEquals($expected, $activity->changes);
+        });
 
         $this->assertCount(2, $this->project->activities);
     }

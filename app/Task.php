@@ -3,15 +3,20 @@
 namespace App;
 
 use App\Activity;
+use App\Traits\RecordActivity;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use RecordActivity;
+
     protected $guarded = [];
 
     protected $touches = ['project'];
 
     protected $casts = ['completed' => 'boolean'];
+
+    protected static $recordableEvents = ['created', 'deleted'];
 
     public function project()
     {
@@ -56,18 +61,5 @@ class Task extends Model
         $this->recordActivity('task_incompleted');
 
         return $incomplete;
-    }
-
-    public function activities()
-    {
-        return $this->morphMany(Activity::class, 'subject')->latest('updated_at');
-    }
-
-    public function recordActivity($description)
-    {
-        $this->activities()->create([
-            'description' => $description,
-            'project_id' => $this->project->id
-        ]);
     }
 }

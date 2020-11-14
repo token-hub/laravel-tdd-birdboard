@@ -17,6 +17,8 @@ class TaskObserver
         $task->recordActivity('task_created');
     }
 
+
+
     /**
      * Handle the task "updated" event.
      *
