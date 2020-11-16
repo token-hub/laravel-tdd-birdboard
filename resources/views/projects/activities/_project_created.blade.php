@@ -1,1 +1,1 @@
-You created "{{ $activity->project->title }}"
+{{ $activity->ownerName() }} created "{{ $activity->project->title }}"

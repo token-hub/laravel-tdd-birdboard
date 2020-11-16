@@ -41,6 +41,7 @@ trait RecordActivity
         $this->activities()->create([
             'description' => $description,
             'project_id' => $this->getProjectId(),
+            'user_id' => ($this->project ?? $this)->owner->id,
             'changes' =>  $this->activityChanges()
         ]);
     }
@@ -49,9 +50,9 @@ trait RecordActivity
     {
         if ($this->wasChanged()) {
             return [
-                'before' => array_diff($this->oldAttributes, $this->getAttributes()),
+                'before' => array_except(array_diff($this->oldAttributes, $this->getAttributes()), 'updated_at'),
                 // 'after' => array_diff($this->getAttributes(), $this->oldAttributes)
-                'after' => $this->getChanges()
+                'after' =>  array_except($this->getChanges(), 'updated_at')
             ];
         }
     }

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Project;
 use Illuminate\Http\Request;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\ProjectRequest;
 
 class ProjectController extends Controller
 {
@@ -15,10 +15,8 @@ class ProjectController extends Controller
         return view('projects.index')->with('projects', $projects);
     }
 
-    public function show(Project $project)
+    public function show(Project $project, ProjectRequest $request)
     {
-        $this->authorize('view', $project);
-
         return view('projects.show')->with('project', $project);
     }
 
@@ -47,10 +45,17 @@ class ProjectController extends Controller
         return view('projects.edit')->with('project', $project);
     }
 
-    public function update(Project $project, UpdateProjectRequest $request)
+    public function update(Project $project, ProjectRequest $request)
     {
         $request->updateProject();
 
         return redirect($project->path());
+    }
+
+    public function destroy(Project $project, ProjectRequest $request)
+    {
+        $project->delete();
+
+        return redirect('/projects');
     }
 }

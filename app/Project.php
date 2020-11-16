@@ -12,6 +12,8 @@ class Project extends Model
 
     protected $guarded = [];
 
+    public static $recordableEvents = ['created', 'updated'];
+
     public function path()
     {
         return "projects/{$this->id}";

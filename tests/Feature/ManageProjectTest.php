@@ -44,6 +44,35 @@ class ManageProjectTest extends TestCase
     }
 
     /** @test */
+    public function a_user_can_delete_a_project()
+    {
+        $this->signIn();
+
+        $this->post('projects', array_merge($this->project_attributes(true)));
+
+        $project = Project::first();
+
+        $this->call('delete', $project->path(), ['_token' => Session::token()])
+            ->assertRedirect('/projects');
+
+        $this->assertDatabaseMissing('projects', $project->only('id'));
+    }
+
+    /** @test */
+    public function unauthorized_cannot_delete_a_project()
+    {
+        $project = ProjectFactory::create();
+
+        $this->call('delete', $project->path(), ['_token' => Session::token()])
+            ->assertRedirect('/login');
+
+        $this->signIn();
+
+        $this->call('delete', $project->path(), ['_token' => Session::token()])
+            ->assertStatus(403);
+    }
+
+    /** @test */
     public function a_project_requires_a_title()
     {
         $this->signIn();

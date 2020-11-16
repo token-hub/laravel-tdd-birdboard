@@ -19,8 +19,14 @@ class Activity extends Model
     {
         return $this->morphTo();
     }
-    // public function activitable()
-    // {
-    //     return $this->morphTo();
-    // }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function ownerName()
+    {
+        return $this->owner->is(current_user()) ? 'You' : current_user()->name ;
+    }
 }
