@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\User;
 use App\Project;
 use Tests\TestCase;
 use Facades\Tests\Setup\ProjectFactory;
@@ -184,6 +185,18 @@ class ManageProjectTest extends TestCase
         $this->call('get', $project->path().'/edit')->assertOk();
 
         $response->assertRedirect($project->path());
+    }
+
+    /** @test */
+    public function members_of_a_project_can_view_the_project()
+    {
+        $this->signIn();
+
+        tap(ProjectFactory::create(), function ($project) {
+            $project->invite($this->user);
+            $this->assertTrue($project->isMember($this->user));
+            $this->get('/projects')->assertSee($project->title);
+        });
     }
 
     public function project_attributes($token = false, $param = [])

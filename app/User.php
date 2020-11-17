@@ -46,4 +46,21 @@ class User extends Authenticatable
     {
         return $this->projects()->create($attributes);
     }
+
+    public function accessibleProjects()
+    {
+        // get personal project of the current user
+        // then get also the shared projects with the current user
+        // using the relationship method 'member'
+
+        return Project::where('user_id', $this->id)
+            ->orWhereHas('members', function ($query) {
+                $query->where('user_id', $this->id);
+            })->get();
+
+        // return Project::where('user_id', $this->id)
+        //     ->orWhereHas('members', function ($query) {
+        //         $query->where('user_id', $this->id);
+        //     })->get();
+    }
 }

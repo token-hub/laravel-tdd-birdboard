@@ -59,6 +59,18 @@ class ProjectTest extends TestCase
         $this->assertCount(1, $this->project->activities);
     }
 
+    /** @test */
+    public function a_project_can_invite_userss()
+    {
+        // Given I Have a project
+        $project = ProjectFactory::create();
+
+        // And the owner of project invites another user
+        $project->invite($newUser = factory(\App\User::class)->create());
+
+        $this->assertTrue($project->isMember($newUser));
+    }
+
     public function project_attributes()
     {
         return [

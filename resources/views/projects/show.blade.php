@@ -12,6 +12,9 @@
 			</a>
 		</div>
 		<div class="flex">
+			<form action="" method='POST'>
+				<button type='submit'></button>
+			</form>
 			<a
 				href="/projects/create"
 				class="button"
