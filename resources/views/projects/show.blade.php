@@ -1,5 +1,4 @@
 @component('layouts.app')
-
 	<header class='flex justify-between mb-6'>
 		<div class='flex items-end'>
 			<p class="text-gray-500 mr-2">
@@ -11,15 +10,18 @@
 				><h2>Edit project</h2>
 			</a>
 		</div>
-		<div class="flex">
-			<form action="" method='POST'>
-				<button type='submit'></button>
-			</form>
+		<div class="flex items-center">
+			@forelse($project->members as $member)
+				<img src="https://gravatar.com/avatar/{{ md5($member->email)}}?s=60" class='rounded-full w-8 m-2' alt="{{$member->name}}' avatar">
+			@empty
+			@endforelse
+
 			<a
 				href="/projects/create"
-				class="button"
+				class="button ml-4"
 				><h2>Invite to project</h2>
 			</a>
+
 		</div>
 	</header>
 
@@ -57,21 +59,22 @@
 					@method('PATCH')
 					<textarea
 						class='card w-full mx-2'
-						style="height: 200px"
 						placeholder="Create notes for your project" name='notes'
 						>{{ $project->notes }}
 					</textarea>
 					<button type='submit' class='button'>Submit</button>
 				</form>
 			</div>
+			@include('projects._errors')
 		</div>
 
 		<div class='lg:w-1/4'>
-			@component('projects._card', ['project' => $project])
-			@endcomponent
+			@include('projects._card', ['project' => $project])
+			@include('projects.activities._card', ['activities' => $project->activities])
 
-			@component('projects.activities._card', ['activities' => $project->activities])
-			@endcomponent
+			@can('update', $project)
+				@include('projects._invite', ['project' =>  $project])
+			@endcan
 		</div>
 	</main>
 @endcomponent

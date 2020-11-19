@@ -20,10 +20,57 @@ class InvitationTest extends TestCase
     }
 
     /** @test */
+    public function a_project_can_invite_user()
+    {
+        $this->signIn();
+
+        $project = ProjectFactory::ownedBy($this->user)->create();
+
+        $userToInvite = factory(\App\User::class)->create();
+
+        $this->post($project->path().'/invitations', ['email' => $userToInvite->email, '_token' => Session::token()])
+            ->assertRedirect($project->path());
+
+        $this->assertTrue($project->members->contains($userToInvite));
+    }
+
+    /** @test */
+    public function the_email_address_must_be_associated_with_a_valid_birdboard_account()
+    {
+        $this->signIn();
+
+        $project = ProjectFactory::ownedBy($this->user)->create();
+
+        $this->post($project->path().'/invitations', ['email' => 'notAuser@example.com', '_token' => Session::token()])
+        // ->assertSessionHasErrors('email');
+        ->assertSessionHasErrors(['email' => 'The user you are inviting must have a Birdboard account.'], null, 'invitations');
+    }
+
+    /** @test */
+    public function non_owners_may_not_invite_users()
+    {
+        $this->signIn();
+
+        $project = ProjectFactory::create();
+
+        $user = $this->user;
+
+        $this->assertInvitationForbidden($project, $this->user);
+
+        $project->invite($this->user);
+
+        $this->assertInvitationForbidden($project, $this->user);
+    }
+
+    public function assertInvitationForbidden($project, $user)
+    {
+        $this->post($project->path().'/invitations', ['email' => $user->email, '_token' => Session::token()])
+            ->assertStatus(403);
+    }
+
+    /** @test */
     public function a_project_can_invite_users()
     {
-        $this->withoutExceptionHandling();
-
         // Given I Have a project
         $project = ProjectFactory::create();
 
