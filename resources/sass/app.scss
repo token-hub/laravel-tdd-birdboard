@@ -4,20 +4,36 @@
 // Fonts
 @import url('https://fonts.googleapis.com/css?family=Nunito');
 
+@import 'themes/_light';
+@import 'themes/_dark';
+
+@import 'components/_card';
+@import 'components/_button';
+
 @tailwind base;
 
 @tailwind components;
 
 @tailwind utilities;
 
+
+// :root {
+// 	--page-background-color: #edf2f7;
+// 	--card-background-color: white;
+// 	--button-background-color: #63b3ed;
+// 	--header-background-color: white;
+// }
+
+
 // Bootstrap
 // @import '~bootstrap/scss/bootstrap';
 //
 
-.button {
-	@apply .bg-blue-400 .text-white .rounded-lg .shadow-md .py-2 .px-5
-}
 
-.card {
-	@apply .p-4 .m-2 .rounded-md .shadow-md .bg-white
-}
+// .button {
+// 	@apply .bg-blue-400 .text-white .rounded-lg .shadow-md .py-2 .px-5
+// }
+
+// .card {
+// 	@apply .p-4 .m-2 .rounded-md .shadow-md .bg-white
+// }

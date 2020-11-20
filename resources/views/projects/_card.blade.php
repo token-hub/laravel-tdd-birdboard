@@ -4,13 +4,15 @@
 			{{ $project->title }}
 		</a>
 	</h3>
-	<div class='text-gray-500 mb-4 flex-1'>{{ str($project->description) }}</div>
+	<div class='mb-4 flex-1'>{{ str($project->description) }}</div>
 
-	<footer>
-		<form action="{{ $project->path() }}" class='text-right' method='POST'>
-			@method('DELETE')
-			@csrf
-			<button type='submit' class='button'>Delete</button>
-		</form>
-	</footer>
+	@can('manage')
+		<footer>
+			<form action="{{ $project->path() }}" class='text-right' method='POST'>
+				@method('DELETE')
+				@csrf
+				<button type='submit' class='button'>Delete</button>
+			</form>
+		</footer>
+	@endcan
 </div>

@@ -1,3 +1,11 @@
+let colors = {
+  default: 'var(--text-default-color)',
+  accent: 'var(--text-accent-color)',
+  'accent-light': 'var(--text-accent-light-color)',
+  muted: 'var(--text-muted-color)',
+  'muted-light': 'var(--text-muted-light-color)',
+}
+
 module.exports = {
   future: {
     // removeDeprecatedGapUtilities: true,
@@ -19,6 +27,8 @@ module.exports = {
     colors: {
       transparent: 'transparent',
       current: 'currentColor',
+
+      default: 'var(--text-default-color)',
 
       black: '#000',
       white: '#fff',
@@ -155,7 +165,12 @@ module.exports = {
       '56': '14rem',
       '64': '16rem',
     },
-    backgroundColor: theme => theme('colors'),
+    backgroundColor: theme => ({
+      'page': 'var(--page-background-color)',
+      'card': 'var(--card-background-color)',
+      'button': 'var(--button-background-color)',
+      'header': 'var(--header-background-color)',
+      }),
     backgroundImage: {
       none: 'none',
       'gradient-to-t': 'linear-gradient(to top, var(--gradient-color-stops))',

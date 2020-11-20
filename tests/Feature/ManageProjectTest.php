@@ -26,19 +26,9 @@ class ManageProjectTest extends TestCase
     {
         $this->signIn();
 
-        $attributes = $this->project_attributes();
-
         $this->get('projects/create')->assertStatus(200);
 
-        $response = $this->post('projects', array_merge($attributes, ['_token'=>Session::token()]));
-
-        $project = Project::first();
-
-        $response->assertRedirect($project->path());
-
-        $this->assertDatabaseHas('projects', $attributes);
-
-        $this->get($project->path())
+        $this->followingRedirects()->post('projects', $attributes = array_merge($this->project_attributes(), ['_token'=>Session::token()]))
             ->assertSee($attributes['title'])
             ->assertSee($attributes['description'])
             ->assertSee($attributes['notes']);
@@ -70,6 +60,13 @@ class ManageProjectTest extends TestCase
         $this->signIn();
 
         $this->call('delete', $project->path(), ['_token' => Session::token()])
+            ->assertStatus(403);
+
+        $project->invite($this->user);
+
+        $this->assertTrue($project->members->contains($this->user));
+
+        $this->delete($project->path(), ['_token' => Session::token()])
             ->assertStatus(403);
     }
 

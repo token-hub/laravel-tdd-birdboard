@@ -3,7 +3,8 @@
 1 verbose cli   'C:\\Program Files\\nodejs\\node.exe',
 1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
 1 verbose cli   'run',
-1 verbose cli   'dev'
+1 verbose cli   'dev',
+1 verbose cli   '--watch'
 1 verbose cli ]
 2 info using npm@6.14.6
 3 info using node@v12.18.3
@@ -26,8 +27,8 @@
 13 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:286:5)
 14 verbose pkgid @
 15 verbose cwd C:\Users\John Suyang\projects\Laravel\birdboard6
-16 verbose Windows_NT 10.0.18362
-17 verbose argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "dev"
+16 verbose Windows_NT 10.0.18363
+17 verbose argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "run" "dev" "--watch"
 18 verbose node v12.18.3
 19 verbose npm  v6.14.6
 20 error code ELIFECYCLE

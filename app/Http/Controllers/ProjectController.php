@@ -36,10 +36,8 @@ class ProjectController extends Controller
         return view('projects.create');
     }
 
-    public function edit(Project $project)
+    public function edit(Project $project, ProjectRequest $request)
     {
-        $this->authorize('update', $project);
-
         return view('projects.edit')->with('project', $project);
     }
 
@@ -50,8 +48,10 @@ class ProjectController extends Controller
         return redirect($project->path());
     }
 
-    public function destroy(Project $project, ProjectRequest $request)
+    public function destroy(Project $project)
     {
+        $this->authorize('manage', $project);
+
         $project->delete();
 
         return redirect('/projects');
