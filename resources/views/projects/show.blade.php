@@ -44,7 +44,7 @@
 						@csrf
 						<div class='card'>
 							<div class="flex">
-								<input type="text" name='body' class="w-full {{ $task->completed ? 'text-default' : '' }} bg-card" value="{{ $task->body }}">
+								<input type="text" name='body' class="w-full {{ $task->completed ? 'text-gray-500 strike line-through' : 'text-default' }} bg-card" value="{{ $task->body }}">
 								<input type="checkbox" name="completed" onChange="this.form.submit()"  {{ $task->completed ? 'checked' : '' }}>
 							</div>
 						</div>
@@ -72,7 +72,7 @@
 
 		<div class='lg:w-1/4'>
 			@include('projects._card', ['project' => $project])
-			@include('projects.activities._card', ['activities' => $project->activities])
+			@include('projects.activities._card', ['activities' => $project->activities->take(10)])
 
 			@can('manage', $project)
 				@include('projects._invite', ['project' =>  $project])

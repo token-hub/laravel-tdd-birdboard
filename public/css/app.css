@@ -20138,6 +20138,13 @@ video {
           animation: bounce 1s infinite;
 }
 
+:root {
+  --page-background-color: #edf2f7;
+  --card-background-color: white;
+  --button-background-color: #63b3ed;
+  --header-background-color: white;
+}
+
 @media (min-width: 640px){
   .sm\:container{
     width: 100%;
