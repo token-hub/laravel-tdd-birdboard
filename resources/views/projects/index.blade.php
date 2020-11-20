@@ -17,4 +17,9 @@
 			<div>No projects yet</div>
 		@endforelse
 	</main>
+
+	<new-project-modal></new-project-modal>
+
+
+	<a href="" class='button' @click.prevent="$modal.show('projectmodal')"> Show Modal </a>
 @endcomponent

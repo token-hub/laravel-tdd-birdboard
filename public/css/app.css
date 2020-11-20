@@ -44,6 +44,17 @@
   color: white;
 }
 
+.button.is-outlined {
+  background-color: var(--card-background-color);
+  border-width: 1px;
+  --border-opacity: 1;
+  border-color: #63b3ed;
+  border-color: rgba(99, 179, 237, var(--border-opacity));
+  --text-opacity: 1;
+  color: #63b3ed;
+  color: rgba(99, 179, 237, var(--text-opacity));
+}
+
 .theme-light .button {
   box-shadow: 0 2px 7px 0 #b0eaff;
 }
